@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { FC } from 'react'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import Login from './components/Login'
+import Join from './components/Join'
+import TaskList from './components/TaskList'
+import Task from './components/Task'
 
-export default App;
+import Auth from './utils/Auth'
+
+const App: FC = () => (
+  <Switch>
+    <Route path='/login' component={Login} />
+    <Route path='/join' component={Join} />
+
+    // protect route
+    <Route path='/tasks'
+      render={
+        () => Auth.isLoggedIn()
+          ? <TaskList />
+          : <Redirect to='/login' />
+      }
+    />
+    <Route path='/task/new'
+      render={
+        () => Auth.isLoggedIn()
+          ? <Task create={true} />
+          : <Redirect to='/login' />
+      }
+    />
+    <Route path='/task/:id'
+      render={
+        () => Auth.isLoggedIn()
+          ? <Task create={false} />
+          : <Redirect to='/login' />
+      }
+    />
+
+    <Redirect to="/login" />
+  </Switch>
+)
+
+export default App
