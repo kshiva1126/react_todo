@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Button, Box, Input, Heading, Text, Checkbox } from '@chakra-ui/core'
 import { useForm } from 'react-hook-form'
 import { useParams, withRouter, RouteComponentProps  } from 'react-router-dom'
@@ -15,13 +15,19 @@ type TaskProps = {create:boolean} & RouteComponentProps<{id: string | undefined}
 
 const Task: FC<TaskProps> = (props) => {
   const { id } = useParams()
-  const { register, handleSubmit, errors, setError, clearError, getValues, setValue } = useForm({
+
+  const { register, handleSubmit, errors, getValues, setValue } = useForm<TaskType>({
     defaultValues: {
       id: 0,
       name: '',
       comment: '',
       done: false,
     }
+  })
+
+  const formTask = getValues()
+  const [ task, setTask ] = useState<TaskType>({
+    ...formTask
   })
 
   const header = Auth.getHeader()
@@ -77,6 +83,10 @@ const Task: FC<TaskProps> = (props) => {
       })
         .then(async (res) => {
           const data = await res.json()
+          if (data === null) {
+            return
+          }
+
           if ('detail' in data) {
             Auth.logout()
             props.history.push('/login')
@@ -109,7 +119,7 @@ const Task: FC<TaskProps> = (props) => {
       >
         タスク
       </Heading>
-      {((props.create) || (!props.create && Number(id) !== 0)) && (
+      {((props.create) || (!props.create && Number(task.id) !== 0)) && (
         <form
           onSubmit={handleSubmit(onSubmit)}
         >

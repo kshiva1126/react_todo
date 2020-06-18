@@ -1,5 +1,5 @@
-import React, { FC } from 'react'
-import { Button, Box, Input, Heading, Text } from '@chakra-ui/core'
+import React, { FC, useState } from 'react'
+import { Button, Box, Input, Heading, Text, InputRightElement, InputGroup } from '@chakra-ui/core'
 import { useForm } from 'react-hook-form'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import Auth from '../../utils/Auth'
@@ -20,6 +20,9 @@ const Join: FC<JoinProps> = ({history}) => {
       password: '',
     }
   })
+
+  const [show, setShow] = useState(false)
+  const handleClick = () => setShow(!show)
 
   const postUser = async (joinData: JoinType) => {
     const url = 'http://localhost:5000/user'
@@ -108,22 +111,32 @@ const Join: FC<JoinProps> = ({history}) => {
           }
         </Box>
         <Box m={4}>
-          <Input
-            name='password'
-            placeholder='パスワード 8文字以上32文字以下'
-            ref={register({
-              required: 'パスワードは必須項目です',
-              minLength: {
-                value: 8,
-                message: 'パスワードは8文字以上32文字以下で入力してください'
-              },
-              maxLength: {
-                value: 32,
-                message: 'パスワードは8文字以上32文字以下で入力してください'
-              }
-            },
-            )}
-          />
+          <InputGroup size="md">
+            <Input
+              pr="4.5rem"
+              type={show ? "text" : "password"}
+              name='password'
+              placeholder='パスワード 8文字以上32文字以下'
+              ref={register(
+                {
+                  required: 'パスワードは必須項目です',
+                  minLength: {
+                    value: 8,
+                    message: 'パスワードは8文字以上32文字以下で入力してください'
+                  },
+                  maxLength: {
+                    value: 32,
+                    message: 'パスワードは8文字以上32文字以下で入力してください'
+                  }
+                },
+              )}
+            />
+            <InputRightElement width="4.5rem">
+              <Button h="1.75rem" size="sm" onClick={handleClick}>
+                {show ? "Hide" : "Show"}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
           {errors.password &&
             <Text color='#f00'>{errors.password.message}</Text>
           }

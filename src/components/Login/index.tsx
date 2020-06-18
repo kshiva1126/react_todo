@@ -1,5 +1,5 @@
-import React, { FC } from 'react'
-import { Button, Box, Input, Heading, Text, Link, Icon } from '@chakra-ui/core'
+import React, { FC, useState } from 'react'
+import { Button, Box, Input, Heading, Text, Link, Icon, InputRightElement, InputGroup } from '@chakra-ui/core'
 import { useForm } from 'react-hook-form'
 import { Link as RouterLink, withRouter, RouteComponentProps } from 'react-router-dom'
 import Auth, { AuthProps } from '../../utils/Auth'
@@ -13,6 +13,9 @@ const Login: FC<LoginProps> = ({history}) => {
       password: '',
     }
   })
+
+  const [show, setShow] = useState(false)
+  const handleClick = () => setShow(!show)
 
   const onSubmit = async (data: AuthProps, e: any) => {
     const res = await Auth.authenticate(data)
@@ -65,13 +68,24 @@ const Login: FC<LoginProps> = ({history}) => {
           }
         </Box>
         <Box m={4}>
-          <Input
-            name='password'
-            placeholder='パスワード'
-            ref={register({
-              required: 'パスワードは必須項目です',
-            })}
-          />
+          <InputGroup size="md">
+            <Input
+              pr="4.5rem"
+              type={show ? "text" : "password"}
+              name='password'
+              placeholder='パスワード'
+              ref={register(
+                {
+                  required: 'パスワードは必須項目です',
+                },
+              )}
+            />
+            <InputRightElement width="4.5rem">
+              <Button h="1.75rem" size="sm" onClick={handleClick}>
+                {show ? "Hide" : "Show"}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
           {errors.password &&
             <Text color='#f00'>{errors.password.message}</Text>
           }

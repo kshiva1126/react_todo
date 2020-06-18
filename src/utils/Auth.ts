@@ -22,7 +22,6 @@ interface AuthInterface {
 
 class Auth implements AuthInterface {
   async authenticate(props: AuthProps) {
-    console.log({...props, name: ''})
     const url = 'http://localhost:5000/authenticate'
     const data = await fetch(url, {
       method: 'POST',
