@@ -1,3 +1,5 @@
+import url from './ApiURL'
+
 export type AuthProps = {
   email: string
   password: string
@@ -22,13 +24,12 @@ interface AuthInterface {
 
 class Auth implements AuthInterface {
   async authenticate(props: AuthProps) {
-    const url = 'http://localhost:5000/authenticate'
-    const data = await fetch(url, {
+    const data = await fetch(`${url}/authenticate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({...props, name: ''})
+      body: JSON.stringify({ ...props, name: '' })
     })
       .then(res => {
         return res.json()

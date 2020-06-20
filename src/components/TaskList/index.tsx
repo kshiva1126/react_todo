@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect } from 'react'
 import { Box, Heading, Link, Checkbox, Icon, Button } from '@chakra-ui/core'
 import { Link as RouterLink, withRouter, RouteComponentProps } from 'react-router-dom'
 import Auth from '../../utils/Auth'
+import url from '../../utils/ApiURL'
 
 type TaskProps = {} & RouteComponentProps<{}>
 
@@ -26,8 +27,7 @@ const TaskList: FC<TaskProps> = ({ history }) => {
 
   const deleteTask = (id: number) => {
     if (window.confirm('削除しますか?')) {
-      const url = 'http://localhost:5000/task/' + encodeURIComponent(id)
-      fetch(url, {
+      fetch(`${url}/task/` + encodeURIComponent(id), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -52,8 +52,7 @@ const TaskList: FC<TaskProps> = ({ history }) => {
     const target = event.target
     const id = target.id
     const value = target.type === "checkbox" ? target.checked : target.value
-    const url = 'http://localhost:5000/done/' + encodeURIComponent(id)
-    fetch(url, {
+    fetch(`${url}/done/` + encodeURIComponent(id), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -82,9 +81,7 @@ const TaskList: FC<TaskProps> = ({ history }) => {
   }
 
   const getTasks = () => {
-    const url = 'http://localhost:5000/task'
-    const header = Auth.getHeader()
-    fetch(url, {
+    fetch(`${url}/task`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

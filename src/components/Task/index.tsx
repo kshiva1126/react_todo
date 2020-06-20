@@ -1,8 +1,9 @@
 import React, { FC, useEffect, useState } from 'react'
 import { Button, Box, Input, Heading, Text, Checkbox } from '@chakra-ui/core'
 import { useForm } from 'react-hook-form'
-import { useParams, withRouter, RouteComponentProps  } from 'react-router-dom'
+import { useParams, withRouter, RouteComponentProps } from 'react-router-dom'
 import Auth from '../../utils/Auth'
+import url from '../../utils/ApiURL'
 
 interface TaskType {
   id: number
@@ -11,7 +12,7 @@ interface TaskType {
   done: boolean
 }
 
-type TaskProps = {create:boolean} & RouteComponentProps<{id: string | undefined}>
+type TaskProps = { create: boolean } & RouteComponentProps<{ id: string | undefined }>
 
 const Task: FC<TaskProps> = (props) => {
   const { id } = useParams()
@@ -26,15 +27,14 @@ const Task: FC<TaskProps> = (props) => {
   })
 
   const formTask = getValues()
-  const [ task, setTask ] = useState<TaskType>({
+  const [task, setTask] = useState<TaskType>({
     ...formTask
   })
 
   const header = Auth.getHeader()
 
   const onCreate = (task: TaskType) => {
-    const url = 'http://localhost:5000/task'
-    fetch(url, {
+    fetch(`${url}/task`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -48,8 +48,7 @@ const Task: FC<TaskProps> = (props) => {
 
   const onUpdate = (task: TaskType) => {
     if (!isNaN(id)) {
-      const url = 'http://localhost:5000/task/' + encodeURIComponent(id)
-      fetch(url, {
+      fetch(`${url}/task/` + encodeURIComponent(id), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -72,9 +71,7 @@ const Task: FC<TaskProps> = (props) => {
 
   const getTask = () => {
     if (!isNaN(id)) {
-      const url = 'http://localhost:5000/task/' + encodeURIComponent(id)
-      const header = Auth.getHeader()
-      fetch(url, {
+      fetch(`${url}/task/` + encodeURIComponent(id), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -95,6 +92,7 @@ const Task: FC<TaskProps> = (props) => {
           for (const property in data) {
             setValue(property, data[property])
           }
+          setTask(data)
         })
     }
   }
@@ -132,7 +130,7 @@ const Task: FC<TaskProps> = (props) => {
               })}
             />
             {errors.name &&
-            <Text color='#f00'>{errors.name.message}</Text>
+              <Text color='#f00'>{errors.name.message}</Text>
             }
           </Box>
           <Box m={4}>
@@ -146,7 +144,7 @@ const Task: FC<TaskProps> = (props) => {
             <Checkbox name='done' children='done' ref={register} />
           </Box>
           <Box mt={5} textAlign='center'>
-            <Button type='submit'>{ props.create ? 'タスクを登録する' : 'タスクを更新する'}</Button>
+            <Button type='submit'>{props.create ? 'タスクを登録する' : 'タスクを更新する'}</Button>
           </Box>
         </form>
       )}

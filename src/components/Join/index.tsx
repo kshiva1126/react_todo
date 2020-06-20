@@ -3,6 +3,7 @@ import { Button, Box, Input, Heading, Text, InputRightElement, InputGroup } from
 import { useForm } from 'react-hook-form'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import Auth from '../../utils/Auth'
+import url from '../../utils/ApiURL'
 
 interface JoinType {
   name: string
@@ -12,7 +13,7 @@ interface JoinType {
 
 type JoinProps = {} & RouteComponentProps<{}>
 
-const Join: FC<JoinProps> = ({history}) => {
+const Join: FC<JoinProps> = ({ history }) => {
   const { register, handleSubmit, errors, setError } = useForm({
     defaultValues: {
       name: '',
@@ -25,8 +26,7 @@ const Join: FC<JoinProps> = ({history}) => {
   const handleClick = () => setShow(!show)
 
   const postUser = async (joinData: JoinType) => {
-    const url = 'http://localhost:5000/user'
-    const data = await fetch(url, {
+    const data = await fetch(`${url}/user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ const Join: FC<JoinProps> = ({history}) => {
     const data = await postUser(joinData)
     if ('detail' in data) {
       const key = Object.keys(data.detail)[0]
-      if (key === 'name' || key === 'email'|| key === 'password') {
+      if (key === 'name' || key === 'email' || key === 'password') {
         setError(key, 'exists', data.detail[key])
 
         return
